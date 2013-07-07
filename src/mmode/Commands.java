@@ -26,16 +26,19 @@ public class Commands  implements CommandExecutor  {
 				if (args[0].equalsIgnoreCase("on"))
 				{
 					config.mmodeEnabled = true;
+					sender.sendMessage("Maintenance mode on");
 					return true;
 				}
 				else if (args[0].equalsIgnoreCase("off"))
 				{
 					config.mmodeEnabled = false;
+					sender.sendMessage("Maintenance mode off");
 					return true;
 				}
 				else if (args[0].equalsIgnoreCase("reload"))
 				{
 					config.loadConfig();
+					sender.sendMessage("Config reloaded");
 					return true;
 				}
 			}
