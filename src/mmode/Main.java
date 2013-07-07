@@ -1,6 +1,7 @@
 package mmode;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,6 +33,7 @@ public class Main extends JavaPlugin implements Listener {
 		config.loadConfig();
 		commands = new Commands(config);
 		getCommand("mmode").setExecutor(commands);
+		getServer().getPluginManager().registerEvents(this, this);
 		
 		protocolManager.addPacketListener(
 	    		new PacketAdapter(this, ConnectionSide.SERVER_SIDE, ListenerPriority.HIGHEST, GamePhase.LOGIN, new Integer[] { Integer.valueOf(255) })
@@ -67,6 +69,7 @@ public class Main extends JavaPlugin implements Listener {
 	public void onDisable()
 	{
 		 protocolManager.removePacketListeners(this);
+		 HandlerList.unregisterAll((JavaPlugin)this);
 		 protocolManager = null;
 		 commands = null;
 		 config = null;
