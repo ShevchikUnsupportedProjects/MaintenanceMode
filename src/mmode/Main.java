@@ -43,7 +43,7 @@ public class Main extends JavaPlugin implements Listener {
 	    					StructureModifier<String> packetStr = event.getPacket().getSpecificModifier(String.class);
 	    					String p = (String)packetStr.read(0);
 	    					String prep = p.substring(0, 3);
-	    					String motd = config.mmodeMOTD.replace("{motd}", p.split("\u0000")[2]);
+	    					String motd = config.mmodeMOTD.replace("{motd}", p.split("\u0000")[3]);
 	    					packetStr.write(0, 
 	    							prep  //first 3 bytes
 	    							+ -1  //protocol vesion
