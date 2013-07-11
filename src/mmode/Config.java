@@ -13,6 +13,7 @@ public class Config {
 	public boolean mmodeEnabled = false;
 	public String mmodeMessage = "Maintenance";
 	public String mmodeMOTD = "{motd} <-- At maintenance";
+	public boolean kickOnEnable = true;
 	public String mmodeKickMessage = "Server is at maintenance. Please come back later.";
 	public HashSet<String> mmodeAdminsList = new HashSet<String>();
 	
@@ -24,6 +25,7 @@ public class Config {
 		mmodeMOTD = config.getString("MOTD", mmodeMOTD);
 		mmodeKickMessage = config.getString("KickMessage", mmodeKickMessage);
 		mmodeAdminsList = new HashSet<String>(config.getStringList("AllowedList"));
+		kickOnEnable = config.getBoolean("KickNonAllowedOnMModeEnable", kickOnEnable);
 		
 		saveConfig();
 	}
@@ -36,6 +38,7 @@ public class Config {
 		config.set("MOTD", mmodeMOTD);
 		config.set("KickMessage", mmodeKickMessage);
 		config.set("AllowedList", new ArrayList<String>(mmodeAdminsList));
+		config.set("KickNonAllowedOnMModeEnable", kickOnEnable);
 		
 		try {
 			config.save(new File("plugins/MMode/config.yml"));

@@ -1,5 +1,6 @@
 package mmode;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,6 +27,15 @@ public class Commands  implements CommandExecutor  {
 				if (args[0].equalsIgnoreCase("on"))
 				{
 					config.mmodeEnabled = true;
+					if (config.kickOnEnable) {
+						for (Player p :Bukkit.getOnlinePlayers())
+						{
+							if (!config.mmodeAdminsList.contains(p.getName()))
+							{
+								p.kickPlayer(config.mmodeKickMessage);
+							}
+						}
+					}
 					sender.sendMessage("Maintenance mode on");
 					return true;
 				}
