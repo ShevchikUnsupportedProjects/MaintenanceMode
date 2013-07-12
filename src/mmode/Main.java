@@ -1,3 +1,20 @@
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * 
+ */
+
 package mmode;
 
 import org.bukkit.event.EventHandler;
@@ -50,9 +67,9 @@ public class Main extends JavaPlugin implements Listener {
 	    							prep  //first 3 bytes
 	    							+ -1  //protocol vesion
 	    							+ "\u0000" 
-	    							+ config.mmodeMessage //message near ping
+	    							+ ColorParser.parseColor(config.mmodeMessage) //message near ping
 	    							+ "\u0000" 
-	    							+ motd //motd
+	    							+ ColorParser.parseColor(motd) //motd
 	    							+ "\u0000" 
 	    							+ getServer().getOnlinePlayers().length  //online players count
 	    							+ "\u0000" 
@@ -82,7 +99,7 @@ public class Main extends JavaPlugin implements Listener {
 		
 		if (!config.mmodeAdminsList.contains(e.getPlayer().getName()))
 		{
-			e.getPlayer().kickPlayer(config.mmodeKickMessage);
+			e.getPlayer().kickPlayer(ColorParser.parseColor(config.mmodeKickMessage));
 		}
 		
 	}
