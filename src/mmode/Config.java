@@ -29,7 +29,7 @@ public class Config {
 
 	public boolean mmodeEnabled = false;
 	public String mmodeMessage = "&6Maintenance";
-	public String mmodeMOTD = "{motd} &4@At maintenance";
+	public String mmodeMOTD = "{motd} &4At maintenance";
 	public boolean kickOnEnable = true;
 	public String mmodeKickMessage = "Server is at maintenance. Please come back later.";
 	public HashSet<String> mmodeAdminsList = new HashSet<String>();
