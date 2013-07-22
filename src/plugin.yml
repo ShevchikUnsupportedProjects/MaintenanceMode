@@ -1,4 +1,4 @@
-name: MaintenanceMode
+name: MMode
 main: mmode.Main
 version: 1.0
 author: Shevchik
