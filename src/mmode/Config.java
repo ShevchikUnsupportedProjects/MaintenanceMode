@@ -30,6 +30,7 @@ public class Config {
 	public boolean mmodeEnabled = false;
 	public String mmodeMessage = "&6Maintenance";
 	public String mmodeMOTD = "{motd} &4At maintenance";
+	public boolean mmodewhitelistenabled = true;
 	public boolean kickOnEnable = true;
 	public String mmodeKickMessage = "Server is at maintenance. Please come back later.";
 	public HashSet<String> mmodeAdminsList = new HashSet<String>();
@@ -40,6 +41,7 @@ public class Config {
 		
 		mmodeMessage = config.getString("PingMessage", mmodeMessage);
 		mmodeMOTD = config.getString("MOTD", mmodeMOTD);
+		mmodewhitelistenabled = config.getBoolean("enableallowedlist",mmodewhitelistenabled);
 		mmodeKickMessage = config.getString("KickMessage", mmodeKickMessage);
 		mmodeAdminsList = new HashSet<String>(config.getStringList("AllowedList"));
 		kickOnEnable = config.getBoolean("KickNonAllowedOnMModeEnable", kickOnEnable);
@@ -53,6 +55,7 @@ public class Config {
 		
 		config.set("PingMessage", mmodeMessage);
 		config.set("MOTD", mmodeMOTD);
+		config.set("enableallowedlist",mmodewhitelistenabled);
 		config.set("KickMessage", mmodeKickMessage);
 		config.set("AllowedList", new ArrayList<String>(mmodeAdminsList));
 		config.set("KickNonAllowedOnMModeEnable", kickOnEnable);

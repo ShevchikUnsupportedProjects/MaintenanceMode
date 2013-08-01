@@ -35,6 +35,8 @@ public class JoinListener implements Listener {
 	{
 		if (!config.mmodeEnabled) {return;}
 		
+		if (!config.mmodewhitelistenabled) {return;}
+		
 		if (!config.mmodeAdminsList.contains(e.getPlayer().getName()))
 		{
 			e.getPlayer().kickPlayer(ColorParser.parseColor(config.mmodeKickMessage));

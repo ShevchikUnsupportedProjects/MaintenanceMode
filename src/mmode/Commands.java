@@ -44,12 +44,15 @@ public class Commands  implements CommandExecutor  {
 				if (args[0].equalsIgnoreCase("on"))
 				{
 					config.mmodeEnabled = true;
-					if (config.kickOnEnable) {
-						for (Player p :Bukkit.getOnlinePlayers())
-						{
-							if (!config.mmodeAdminsList.contains(p.getName()))
+					if (config.mmodewhitelistenabled)
+					{
+						if (config.kickOnEnable) {
+							for (Player p :Bukkit.getOnlinePlayers())
 							{
-								p.kickPlayer(ColorParser.parseColor(config.mmodeKickMessage));
+								if (!config.mmodeAdminsList.contains(p.getName()))
+								{
+									p.kickPlayer(ColorParser.parseColor(config.mmodeKickMessage));
+								}
 							}
 						}
 					}
