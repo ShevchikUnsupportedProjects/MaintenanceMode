@@ -37,39 +37,66 @@ public class Commands  implements CommandExecutor  {
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2,
 			String[] args) {
-		if (hasPerm(sender))
+		//check permissions
+		if (!hasPerm(sender))
 		{
-			if (args.length == 1)
-			{
-				if (args[0].equalsIgnoreCase("on"))
+			sender.sendMessage(ColorParser.parseColor("&4You don't have permission to do this"));
+			return true;
+		}
+		//handle command
+		if (args.length == 1 && args[0].equalsIgnoreCase("on"))
+		{
+			config.mmodeEnabled = true;
+			if (config.allowedlistEnabled && config.kickOnEnable) {
+				for (Player p :Bukkit.getOnlinePlayers())	
 				{
-					config.mmodeEnabled = true;
-					if (config.mmodewhitelistenabled)
+					if (!config.mmodeAllowedList.contains(p.getName()))
 					{
-						if (config.kickOnEnable) {
-							for (Player p :Bukkit.getOnlinePlayers())
-							{
-								if (!config.mmodeAdminsList.contains(p.getName()))
-								{
-									p.kickPlayer(ColorParser.parseColor(config.mmodeKickMessage));
-								}
-							}
-						}
+						p.kickPlayer(ColorParser.parseColor(config.kickMessage));
 					}
-					sender.sendMessage(ColorParser.parseColor("&9Maintenance mode on"));
+				}
+			}
+			sender.sendMessage(ColorParser.parseColor("&9Maintenance mode on"));
+			return true;
+		} else 
+		if (args.length == 1 && args[0].equalsIgnoreCase("off"))
+		{
+			config.mmodeEnabled = false;
+			sender.sendMessage(ColorParser.parseColor("&9Maintenance mode off"));
+			return true;
+		} else 
+		if (args.length == 1 && args[0].equalsIgnoreCase("reload"))
+		{			
+			config.loadConfig();
+			sender.sendMessage(ColorParser.parseColor("&9Config reloaded"));
+			return true;
+		} else
+		if ((args.length == 2 || args.length == 3) && args[0].equalsIgnoreCase("alist"))
+		{
+			if (args.length == 2)
+			{
+				if (args[1].equalsIgnoreCase("on")) {
+					config.allowedlistEnabled = true;
+					config.saveConfig();
+					sender.sendMessage(ColorParser.parseColor("&9Allowed list enabled"));
+					return true;
+				} else if (args[1].equalsIgnoreCase("on")) {
+					config.allowedlistEnabled = false;
+					config.saveConfig();
+					sender.sendMessage(ColorParser.parseColor("&9Allowed list enabled"));
 					return true;
 				}
-				else if (args[0].equalsIgnoreCase("off"))
-				{
-					config.mmodeEnabled = false;
-					sender.sendMessage(ColorParser.parseColor("&9Maintenance mode off"));
-					return true;
-				}
-				else if (args[0].equalsIgnoreCase("reload"))
-				{
-					config.loadConfig();
-					sender.sendMessage(ColorParser.parseColor("&9Config reloaded"));
-					return true;
+			} else 
+			if (args.length == 3)
+			{
+				if (args[1].equalsIgnoreCase("add")) {
+					config.mmodeAllowedList.add(args[2]);
+					config.saveConfig();
+					sender.sendMessage(ColorParser.parseColor("&9Player added to list"));
+				} else if (args[1].equalsIgnoreCase("remove")) {
+					config.mmodeAllowedList.remove(args[2]);
+					config.saveConfig();
+					sender.sendMessage(ColorParser.parseColor("&9Player removed from list"));
 				}
 			}
 		}

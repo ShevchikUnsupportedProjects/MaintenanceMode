@@ -30,10 +30,10 @@ public class Config {
 	public boolean mmodeEnabled = false;
 	public String mmodeMessage = "&6Maintenance";
 	public String mmodeMOTD = "{motd} &4At maintenance";
-	public boolean mmodewhitelistenabled = true;
+	public boolean allowedlistEnabled = true;
 	public boolean kickOnEnable = true;
-	public String mmodeKickMessage = "Server is at maintenance. Please come back later.";
-	public HashSet<String> mmodeAdminsList = new HashSet<String>();
+	public String kickMessage = "Server is at maintenance. Please come back later.";
+	public HashSet<String> mmodeAllowedList = new HashSet<String>();
 	
 	public void loadConfig()
 	{
@@ -41,29 +41,28 @@ public class Config {
 		
 		mmodeMessage = config.getString("PingMessage", mmodeMessage);
 		mmodeMOTD = config.getString("MOTD", mmodeMOTD);
-		mmodewhitelistenabled = config.getBoolean("enableallowedlist",mmodewhitelistenabled);
-		mmodeKickMessage = config.getString("KickMessage", mmodeKickMessage);
-		mmodeAdminsList = new HashSet<String>(config.getStringList("AllowedList"));
+		allowedlistEnabled = config.getBoolean("enableallowedlist", allowedlistEnabled);
+		kickMessage = config.getString("KickMessage", kickMessage);
+		mmodeAllowedList = new HashSet<String>(config.getStringList("AllowedList"));
 		kickOnEnable = config.getBoolean("KickNonAllowedOnMModeEnable", kickOnEnable);
 		
 		saveConfig();
 	}
 	
-	private void saveConfig()
+	public void saveConfig()
 	{
 		FileConfiguration config = new YamlConfiguration();
 		
 		config.set("PingMessage", mmodeMessage);
 		config.set("MOTD", mmodeMOTD);
-		config.set("enableallowedlist",mmodewhitelistenabled);
-		config.set("KickMessage", mmodeKickMessage);
-		config.set("AllowedList", new ArrayList<String>(mmodeAdminsList));
+		config.set("enableallowedlist", allowedlistEnabled);
+		config.set("KickMessage", kickMessage);
+		config.set("AllowedList", new ArrayList<String>(mmodeAllowedList));
 		config.set("KickNonAllowedOnMModeEnable", kickOnEnable);
 		
 		try {
 			config.save(new File("plugins/MMode/config.yml"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
