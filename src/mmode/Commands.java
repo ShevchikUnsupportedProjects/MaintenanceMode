@@ -80,10 +80,10 @@ public class Commands  implements CommandExecutor  {
 					config.saveConfig();
 					sender.sendMessage(ColorParser.parseColor("&9Allowed list enabled"));
 					return true;
-				} else if (args[1].equalsIgnoreCase("on")) {
+				} else if (args[1].equalsIgnoreCase("off")) {
 					config.allowedlistEnabled = false;
 					config.saveConfig();
-					sender.sendMessage(ColorParser.parseColor("&9Allowed list enabled"));
+					sender.sendMessage(ColorParser.parseColor("&9Allowed list disabled"));
 					return true;
 				}
 			} else 
