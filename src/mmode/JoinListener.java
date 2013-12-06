@@ -18,8 +18,11 @@
 package mmode;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 public class JoinListener implements Listener {
 	
@@ -30,16 +33,29 @@ public class JoinListener implements Listener {
 		this.config = config;
 	}
 	
-	@EventHandler
-	public void onJoin(PlayerJoinEvent e)
+	@EventHandler(priority=EventPriority.LOWEST,ignoreCancelled=true)
+	public void onLogin(PlayerLoginEvent event)
 	{
 		if (!config.mmodeEnabled) {return;}
 		
 		if (!config.allowedlistEnabled) {return;}
 		
-		if (!config.mmodeAllowedList.contains(e.getPlayer().getName()))
+		if (!config.mmodeAllowedList.contains(event.getPlayer().getName()))
 		{
-			e.getPlayer().kickPlayer(ColorParser.parseColor(config.kickMessage));
+			event.disallow(Result.KICK_OTHER, ColorParser.parseColor(config.kickMessage));
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.LOWEST,ignoreCancelled=true)
+	public void onJoin(PlayerJoinEvent event)
+	{
+		if (!config.mmodeEnabled) {return;}
+		
+		if (!config.allowedlistEnabled) {return;}
+		
+		if (!config.mmodeAllowedList.contains(event.getPlayer().getName()))
+		{
+			event.getPlayer().kickPlayer(ColorParser.parseColor(config.kickMessage));
 		}
 		
 	}
