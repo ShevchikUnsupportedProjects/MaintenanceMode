@@ -17,9 +17,8 @@
 
 package mmode;
 
-import net.minecraft.server.v1_7_R1.ChatComponentText;
-import net.minecraft.server.v1_7_R1.ServerPing;
-import net.minecraft.server.v1_7_R1.ServerPingServerData;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -27,6 +26,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
 import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.utility.MinecraftReflection;
 
 public class PingResponseListener {
 
@@ -41,33 +41,71 @@ public class PingResponseListener {
 	
 	public void addPingResponsePacketListener()
 	{
-		main.protocolManager.addPacketListener(
-	    		new PacketAdapter
-	    		(
-	    				PacketAdapter
-	    				.params(main, PacketType.Status.Server.OUT_SERVER_INFO)
-	    				.serverSide()
-	    				.gamePhase(GamePhase.BOTH)
-	    				.listenerPriority(ListenerPriority.HIGHEST)
-	    		)
-	    		{
-	    			public void onPacketSending(PacketEvent event) 
-	    			{
-	    					if (!config.mmodeEnabled) {return;}
-	    					
-	    					StructureModifier<ServerPing> packetStr = event.getPacket().getSpecificModifier(ServerPing.class);
 
-	    					ServerPing serverping = packetStr.read(0);
+		try {
+			main.protocolManager.addPacketListener(
+					new PacketAdapter
+					(
+							PacketAdapter
+							.params(main, PacketType.Status.Server.OUT_SERVER_INFO)
+							.serverSide()
+							.gamePhase(GamePhase.BOTH)
+							.listenerPriority(ListenerPriority.HIGHEST)
+					)
+					{
+						//prepare some variables
+						Class<?> serverPing = MinecraftReflection.getMinecraftClass("ServerPing");
+						Class<?> serverPingServerData = MinecraftReflection.getMinecraftClass("ServerPingServerData");
+						Constructor<?> serverPingServerDataConstructor = serverPingServerData.getConstructor(String.class,int.class);
+						{
+							serverPingServerDataConstructor.setAccessible(true);
+						}
+						Class<?> iChatBaseComponent = MinecraftReflection.getMinecraftClass("IChatBaseComponent");
+						Class<?> chatComponentText = MinecraftReflection.getMinecraftClass("ChatComponentText");
+						Constructor<?> chatComponentTextConstructor = chatComponentText.getConstructor(String.class);
+						{
+							chatComponentTextConstructor.setAccessible(true);
+						}
 
-	    					serverping.setServerInfo(new ServerPingServerData(ColorParser.parseColor(config.mmodeMessage),-1));
-	    					String prevmotd = serverping.a().e();
-	    					String motd = config.mmodeMOTD.replace("{motd}", prevmotd);
-	    					serverping.setMOTD(new ChatComponentText(ColorParser.parseColor(motd)));
-	    					
-	    					packetStr.write(0, serverping);
-	    					
-	    			}
-	    		}
-	    );
+						
+						
+						public void onPacketSending(PacketEvent event) 
+						{
+							try {
+								if (!config.mmodeEnabled) {return;}
+								//construct packet data reader
+								@SuppressWarnings("unchecked")
+								StructureModifier<Object> packetStr = (StructureModifier<Object>) event.getPacket().getSpecificModifier(serverPing);
+								//read data from packet
+								Object serverping = packetStr.read(0);
+								//set ping message
+								String pingMessage = ColorParser.parseColor(config.mmodeMessage);
+								Object serverPingServerDataArgs = serverPingServerDataConstructor.newInstance(pingMessage,-1);
+								Method setServerInfoMethod = serverping.getClass().getDeclaredMethod("setServerInfo", serverPingServerData);
+								setServerInfoMethod.setAccessible(true);
+								setServerInfoMethod.invoke(serverping, serverPingServerDataArgs);
+								//set motd
+								Method aMethod = serverping.getClass().getDeclaredMethod("a");
+								aMethod.setAccessible(true);
+								Object aReturn = aMethod.invoke(serverping);
+								Method eMethod = aReturn.getClass().getDeclaredMethod("e");
+								eMethod.setAccessible(true);
+								String prevmotd = (String) eMethod.invoke(aReturn);
+								String motd = ColorParser.parseColor(config.mmodeMOTD.replace("{motd}", prevmotd));
+								Object chatComponentTextArgs = chatComponentTextConstructor.newInstance(ColorParser.parseColor(motd));
+								Method setMOTDMethod = serverping.getClass().getDeclaredMethod("setMOTD", iChatBaseComponent);
+								setMOTDMethod.setAccessible(true);
+								setMOTDMethod.invoke(serverping, chatComponentTextArgs);
+								//write data to packet
+								packetStr.write(0, serverping);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
