@@ -59,8 +59,10 @@ public class PingResponseListener {
 
 	    					ServerPing serverping = packetStr.read(0);
 
-	    					serverping.setMOTD(new ChatComponentText(ColorParser.parseColor(config.mmodeMOTD)));
 	    					serverping.setServerInfo(new ServerPingServerData(ColorParser.parseColor(config.mmodeMessage),-1));
+	    					String prevmotd = serverping.a().e();
+	    					String motd = config.mmodeMOTD.replace("{motd}", prevmotd);
+	    					serverping.setMOTD(new ChatComponentText(ColorParser.parseColor(motd)));
 	    					
 	    					packetStr.write(0, serverping);
 	    					
