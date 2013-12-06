@@ -1,6 +1,6 @@
 name: MMode
 main: mmode.Main
-version: 1.0
+version: 2.0
 author: Shevchik
 depend: [ProtocolLib]
 load: STARTUP
