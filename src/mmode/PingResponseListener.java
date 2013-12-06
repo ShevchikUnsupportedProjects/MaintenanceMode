@@ -17,6 +17,11 @@
 
 package mmode;
 
+import mmode.pingstructure.PingResponse;
+
+import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
@@ -41,7 +46,7 @@ public class PingResponseListener {
 	    		new PacketAdapter
 	    		(
 	    				PacketAdapter
-	    				.params(main, PacketType.Status.Server.OUT_PING)
+	    				.params(main, PacketType.Status.Server.OUT_SERVER_INFO)
 	    				.serverSide()
 	    				.gamePhase(GamePhase.BOTH)
 	    				.listenerPriority(ListenerPriority.HIGHEST)
@@ -51,9 +56,19 @@ public class PingResponseListener {
 	    			{
 	    					if (!config.mmodeEnabled) {return;}
 
+	    					Gson gson = new GsonBuilder().create();
+	    					
 	    					StructureModifier<String> packetStr = event.getPacket().getSpecificModifier(String.class);
 	    					String jsonencoded = (String)packetStr.read(0);
-
+	    					
+	    					PingResponse ping = new PingResponse();
+	    					
+	    					ping = gson.fromJson(jsonencoded, PingResponse.class);
+	    					
+	    					ping.version.protocol = -1;
+	    					ping.version.name = ColorParser.parseColor(config.mmodeMessage);
+	    					ping.description.text = config.mmodeMOTD;
+	    					
 	    			}
 	    		}
 	    );
