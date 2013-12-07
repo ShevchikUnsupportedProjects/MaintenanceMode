@@ -17,8 +17,13 @@
 
 package mmode;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import org.bukkit.Bukkit;
+import org.bukkit.util.CachedServerIcon;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -53,6 +58,28 @@ public class PingResponseListener {
 							.listenerPriority(ListenerPriority.HIGHEST)
 					)
 					{
+						//icon cache
+						CachedServerIcon cachedicon = Bukkit.getServerIcon();
+						{
+							if (new File(config.mmodeIconPath).exists())
+							{
+								cachedicon = Bukkit.loadServerIcon(new File(config.mmodeIconPath));
+							}
+						}
+						String cachediconpath = config.mmodeIconPath;
+						private CachedServerIcon getIcon()
+						{
+							if (!cachediconpath.equals(config.mmodeIconPath))
+							{
+								try {
+									cachedicon = Bukkit.loadServerIcon(new File(config.mmodeIconPath));
+									cachediconpath = config.mmodeIconPath;
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+							return cachedicon;
+						}
 						//prepare some variables
 						Class<?> serverPing = MinecraftReflection.getMinecraftClass("ServerPing");
 						Class<?> serverPingServerData = MinecraftReflection.getMinecraftClass("ServerPingServerData");
@@ -66,7 +93,7 @@ public class PingResponseListener {
 						{
 							chatComponentTextConstructor.setAccessible(true);
 						}
-
+						Class<?> craftIconCache = Bukkit.getServerIcon().getClass();
 						
 						
 						public void onPacketSending(PacketEvent event) 
@@ -96,6 +123,14 @@ public class PingResponseListener {
 								Method setMOTDMethod = serverping.getClass().getDeclaredMethod("setMOTD", iChatBaseComponent);
 								setMOTDMethod.setAccessible(true);
 								setMOTDMethod.invoke(serverping, chatComponentTextArgs);
+								//set icon
+								Object crafticon = craftIconCache.cast(this.getIcon());
+								Field valueField = craftIconCache.getDeclaredField("value");
+								valueField.setAccessible(true);
+								String icon = (String) valueField.get(crafticon);
+								Method setFaviconMethod = serverping.getClass().getDeclaredMethod("setFavicon", String.class);
+								setFaviconMethod.setAccessible(true);
+								setFaviconMethod.invoke(serverping, icon);
 								//write data to packet
 								packetStr.write(0, serverping);
 							} catch (Exception e) {
