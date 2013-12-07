@@ -44,6 +44,7 @@ public class ColorParser {
 		message = message.replaceAll("(?i)&m", ChatColor.STRIKETHROUGH+ "");
 		message = message.replaceAll("(?i)&n", ChatColor.UNDERLINE+ "");
 		message = message.replaceAll("(?i)&k", ChatColor.MAGIC+ "");
+		message = message.replaceAll("(?i)&r", ChatColor.RESET+ "");
 		return message;
 	}
 	
