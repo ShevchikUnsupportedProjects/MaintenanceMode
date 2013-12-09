@@ -56,6 +56,7 @@ public class PingResponseListener {
 							.serverSide()
 							.gamePhase(GamePhase.BOTH)
 							.listenerPriority(ListenerPriority.HIGHEST)
+							.optionAsync()
 					)
 					{
 						//icon cache
