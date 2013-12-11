@@ -18,20 +18,15 @@
 package mmode;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import org.bukkit.Bukkit;
-import org.bukkit.util.CachedServerIcon;
+import java.io.FileInputStream;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
-import com.comphenix.protocol.reflect.StructureModifier;
-import com.comphenix.protocol.utility.MinecraftReflection;
+import com.comphenix.protocol.wrappers.WrappedServerPing;
+import com.comphenix.protocol.wrappers.WrappedServerPing.CompressedImage;
 
 public class PingResponseListener {
 
@@ -58,82 +53,30 @@ public class PingResponseListener {
 							.listenerPriority(ListenerPriority.HIGHEST)
 							.optionAsync()
 					)
-					{
-						//icon cache
-						CachedServerIcon cachedicon = Bukkit.getServerIcon();
-						{
-							if (new File(config.mmodeIconPath).exists())
-							{
-								cachedicon = Bukkit.loadServerIcon(new File(config.mmodeIconPath));
-							}
-						}
-						String cachediconpath = config.mmodeIconPath;
-						private CachedServerIcon getIcon()
-						{
-							if (!cachediconpath.equals(config.mmodeIconPath))
-							{
-								try {
-									cachedicon = Bukkit.loadServerIcon(new File(config.mmodeIconPath));
-									cachediconpath = config.mmodeIconPath;
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-							return cachedicon;
-						}
-						//prepare some variables
-						Class<?> serverPing = MinecraftReflection.getMinecraftClass("ServerPing");
-						Class<?> serverPingServerData = MinecraftReflection.getMinecraftClass("ServerPingServerData");
-						Constructor<?> serverPingServerDataConstructor = serverPingServerData.getConstructor(String.class,int.class);
-						{
-							serverPingServerDataConstructor.setAccessible(true);
-						}
-						Class<?> iChatBaseComponent = MinecraftReflection.getMinecraftClass("IChatBaseComponent");
-						Class<?> chatComponentText = MinecraftReflection.getMinecraftClass("ChatComponentText");
-						Constructor<?> chatComponentTextConstructor = chatComponentText.getConstructor(String.class);
-						{
-							chatComponentTextConstructor.setAccessible(true);
-						}
-						Class<?> craftIconCache = Bukkit.getServerIcon().getClass();
-						
-						
+					{						
 						public void onPacketSending(PacketEvent event) 
 						{
 							try {
 								if (!config.mmodeEnabled) {return;}
-								//construct packet data reader
-								@SuppressWarnings("unchecked")
-								StructureModifier<Object> packetStr = (StructureModifier<Object>) event.getPacket().getSpecificModifier(serverPing);
-								//read data from packet
-								Object serverping = packetStr.read(0);
+								//read from packet
+								WrappedServerPing ping = event.getPacket().getServerPings().getValues().get(0);
 								//set ping message
 								String pingMessage = ColorParser.parseColor(config.mmodeMessage);
-								Object serverPingServerDataArgs = serverPingServerDataConstructor.newInstance(pingMessage,-1);
-								Method setServerInfoMethod = serverping.getClass().getDeclaredMethod("setServerInfo", serverPingServerData);
-								setServerInfoMethod.setAccessible(true);
-								setServerInfoMethod.invoke(serverping, serverPingServerDataArgs);
+								ping.setVersionProtocol(-1);
+								ping.setVersionName(pingMessage);
 								//set motd
-								Method aMethod = serverping.getClass().getDeclaredMethod("a");
-								aMethod.setAccessible(true);
-								Object aReturn = aMethod.invoke(serverping);
-								Method eMethod = aReturn.getClass().getDeclaredMethod("e");
-								eMethod.setAccessible(true);
-								String prevmotd = (String) eMethod.invoke(aReturn);
+								String prevmotd = ping.getMotD().getJson();
 								String motd = ColorParser.parseColor(config.mmodeMOTD.replace("{motd}", prevmotd));
-								Object chatComponentTextArgs = chatComponentTextConstructor.newInstance(ColorParser.parseColor(motd));
-								Method setMOTDMethod = serverping.getClass().getDeclaredMethod("setMOTD", iChatBaseComponent);
-								setMOTDMethod.setAccessible(true);
-								setMOTDMethod.invoke(serverping, chatComponentTextArgs);
+								ping.setMotD(motd);
 								//set icon
-								Object crafticon = craftIconCache.cast(this.getIcon());
-								Field valueField = craftIconCache.getDeclaredField("value");
-								valueField.setAccessible(true);
-								String icon = (String) valueField.get(crafticon);
-								Method setFaviconMethod = serverping.getClass().getDeclaredMethod("setFavicon", String.class);
-								setFaviconMethod.setAccessible(true);
-								setFaviconMethod.invoke(serverping, icon);
-								//write data to packet
-								packetStr.write(0, serverping);
+								File iconfile = new File(config.mmodeIconPath);
+								if (iconfile.exists())
+								{
+									CompressedImage favicon = CompressedImage.fromPng(new FileInputStream(iconfile));
+									ping.setFavicon(favicon);
+								}
+								//write to packet
+								event.getPacket().getServerPings().getValues().set(0, ping);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
