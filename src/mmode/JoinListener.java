@@ -25,39 +25,43 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 public class JoinListener implements Listener {
-	
+
 	private Config config;
-	
-	public JoinListener(Config config)
-	{
+
+	public JoinListener(Config config) {
 		this.config = config;
 	}
-	
-	@EventHandler(priority=EventPriority.LOWEST,ignoreCancelled=true)
-	public void onLogin(PlayerLoginEvent event)
-	{
-		if (!config.mmodeEnabled) {return;}
-		
-		if (!config.allowedlistEnabled) {return;}
-		
-		if (!config.mmodeAllowedList.contains(event.getPlayer().getName()))
-		{
-			event.disallow(Result.KICK_OTHER, ColorParser.parseColor(config.kickMessage));
+
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onLogin(PlayerLoginEvent event) {
+		if (!config.mmodeEnabled) {
+			return;
+		}
+
+		if (!config.allowedlistEnabled) {
+			return;
+		}
+
+		if (!config.mmodeAllowedList.contains(event.getPlayer().getName())) {
+			event.disallow(Result.KICK_OTHER,
+					ColorParser.parseColor(config.kickMessage));
 		}
 	}
-	
-	@EventHandler(priority=EventPriority.LOWEST,ignoreCancelled=true)
-	public void onJoin(PlayerJoinEvent event)
-	{
-		if (!config.mmodeEnabled) {return;}
-		
-		if (!config.allowedlistEnabled) {return;}
-		
-		if (!config.mmodeAllowedList.contains(event.getPlayer().getName()))
-		{
+
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onJoin(PlayerJoinEvent event) {
+		if (!config.mmodeEnabled) {
+			return;
+		}
+
+		if (!config.allowedlistEnabled) {
+			return;
+		}
+
+		if (!config.mmodeAllowedList.contains(event.getPlayer().getName())) {
 			event.getPlayer().kickPlayer(ColorParser.parseColor(config.kickMessage));
 		}
-		
+
 	}
 
 }

@@ -35,11 +35,10 @@ public class Config {
 	public boolean kickOnEnable = true;
 	public String kickMessage = "Server is at maintenance. Please come back later.";
 	public HashSet<String> mmodeAllowedList = new HashSet<String>();
-	
-	public void loadConfig()
-	{
+
+	public void loadConfig() {
 		FileConfiguration config = YamlConfiguration.loadConfiguration(new File("plugins/MMode/config.yml"));
-		
+
 		mmodeMessage = config.getString("PingMessage", mmodeMessage);
 		mmodeMOTD = config.getString("MOTD", mmodeMOTD);
 		mmodeIconPath = config.getString("Icon", mmodeIconPath);
@@ -47,14 +46,13 @@ public class Config {
 		kickMessage = config.getString("KickMessage", kickMessage);
 		mmodeAllowedList = new HashSet<String>(config.getStringList("AllowedList"));
 		kickOnEnable = config.getBoolean("KickNonAllowedOnMModeEnable", kickOnEnable);
-		
+
 		saveConfig();
 	}
-	
-	public void saveConfig()
-	{
+
+	public void saveConfig() {
 		FileConfiguration config = new YamlConfiguration();
-		
+
 		config.set("PingMessage", mmodeMessage);
 		config.set("MOTD", mmodeMOTD);
 		config.set("Icon", mmodeIconPath);
@@ -62,12 +60,12 @@ public class Config {
 		config.set("KickMessage", kickMessage);
 		config.set("AllowedList", new ArrayList<String>(mmodeAllowedList));
 		config.set("KickNonAllowedOnMModeEnable", kickOnEnable);
-		
+
 		try {
 			config.save(new File("plugins/MMode/config.yml"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 }

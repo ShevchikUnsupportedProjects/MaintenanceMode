@@ -32,59 +32,51 @@ public class PingResponseListener {
 
 	private Main main;
 	private Config config;
-	
-	public PingResponseListener(Main main, Config config)
-	{
+
+	public PingResponseListener(Main main, Config config) {
 		this.main = main;
 		this.config = config;
 	}
-	
-	public void addPingResponsePacketListener()
-	{
 
-		try {
-			main.protocolManager.addPacketListener(
-					new PacketAdapter
-					(
-							PacketAdapter
-							.params(main, PacketType.Status.Server.OUT_SERVER_INFO)
-							.serverSide()
-							.gamePhase(GamePhase.BOTH)
-							.listenerPriority(ListenerPriority.HIGHEST)
-							.optionAsync()
-					)
-					{						
-						public void onPacketSending(PacketEvent event) 
-						{
-							try {
-								if (!config.mmodeEnabled) {return;}
-								//read from packet
-								WrappedServerPing ping = event.getPacket().getServerPings().getValues().get(0);
-								//set ping message
-								String pingMessage = ColorParser.parseColor(config.mmodeMessage);
-								ping.setVersionProtocol(-1);
-								ping.setVersionName(pingMessage);
-								//set motd
-								String prevmotd = ping.getMotD().getJson();
-								String motd = ColorParser.parseColor(config.mmodeMOTD.replace("{motd}", prevmotd));
-								ping.setMotD(motd);
-								//set icon
-								File iconfile = new File(config.mmodeIconPath);
-								if (iconfile.exists())
-								{
-									CompressedImage favicon = CompressedImage.fromPng(new FileInputStream(iconfile));
-									ping.setFavicon(favicon);
-								}
-								//write to packet
-								event.getPacket().getServerPings().getValues().set(0, ping);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+	public void addPingResponsePacketListener() {
+		main.protocolManager.addPacketListener(
+			new PacketAdapter(
+					PacketAdapter
+					.params(main, PacketType.Status.Server.OUT_SERVER_INFO)
+					.serverSide()
+					.gamePhase(GamePhase.BOTH)
+					.listenerPriority(ListenerPriority.HIGHEST)
+					.optionAsync()
+			) {
+				public void onPacketSending(PacketEvent event) {
+					try {
+						if (!config.mmodeEnabled) {
+							return;
 						}
+						// read from packet
+						WrappedServerPing ping = event.getPacket().getServerPings().getValues().get(0);
+						// set ping message
+						String pingMessage = ColorParser.parseColor(config.mmodeMessage);
+						ping.setVersionProtocol(-1);
+						ping.setVersionName(pingMessage);
+						// set motd
+						String prevmotd = ping.getMotD().getJson();
+						String motd = ColorParser.parseColor(config.mmodeMOTD.replace("{motd}", prevmotd));
+						ping.setMotD(motd);
+						// set icon
+						File iconfile = new File(config.mmodeIconPath);
+						if (iconfile.exists()) {
+							CompressedImage favicon = CompressedImage.fromPng(new FileInputStream(iconfile));
+							ping.setFavicon(favicon);
+						}
+						// write to packet
+						event.getPacket().getServerPings().getValues()
+								.set(0, ping);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-			);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+				}
+			}
+		);
 	}
 }

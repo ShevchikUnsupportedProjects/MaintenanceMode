@@ -25,56 +25,44 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class Commands  implements CommandExecutor  {
+public class Commands implements CommandExecutor {
 
 	private Config config;
-	
-	public Commands(Config config)
-	{
+
+	public Commands(Config config) {
 		this.config = config;
 	}
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2,
 			String[] args) {
-		//check permissions
-		if (!hasPerm(sender))
-		{
+		// check permissions
+		if (!hasPerm(sender)) {
 			sender.sendMessage(ColorParser.parseColor("&4You don't have permission to do this"));
 			return true;
 		}
-		//handle command
-		if (args.length == 1 && args[0].equalsIgnoreCase("on"))
-		{
+		// handle command
+		if (args.length == 1 && args[0].equalsIgnoreCase("on")) {
 			config.mmodeEnabled = true;
 			if (config.allowedlistEnabled && config.kickOnEnable) {
-				for (Player p :Bukkit.getOnlinePlayers())	
-				{
-					if (!config.mmodeAllowedList.contains(p.getName()))
-					{
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (!config.mmodeAllowedList.contains(p.getName())) {
 						p.kickPlayer(ColorParser.parseColor(config.kickMessage));
 					}
 				}
 			}
 			sender.sendMessage(ColorParser.parseColor("&9Maintenance mode on"));
 			return true;
-		} else 
-		if (args.length == 1 && args[0].equalsIgnoreCase("off"))
-		{
+		} else if (args.length == 1 && args[0].equalsIgnoreCase("off")) {
 			config.mmodeEnabled = false;
 			sender.sendMessage(ColorParser.parseColor("&9Maintenance mode off"));
 			return true;
-		} else 
-		if (args.length == 1 && args[0].equalsIgnoreCase("reload"))
-		{			
+		} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
 			config.loadConfig();
 			sender.sendMessage(ColorParser.parseColor("&9Config reloaded"));
 			return true;
-		} else
-		if ((args.length == 2 || args.length == 3) && args[0].equalsIgnoreCase("alist"))
-		{
-			if (args.length == 2)
-			{
+		} else if ((args.length == 2 || args.length == 3) && args[0].equalsIgnoreCase("alist")) {
+			if (args.length == 2) {
 				if (args[1].equalsIgnoreCase("on")) {
 					config.allowedlistEnabled = true;
 					config.saveConfig();
@@ -86,9 +74,7 @@ public class Commands  implements CommandExecutor  {
 					sender.sendMessage(ColorParser.parseColor("&9Allowed list disabled"));
 					return true;
 				}
-			} else 
-			if (args.length == 3)
-			{
+			} else if (args.length == 3) {
 				if (args[1].equalsIgnoreCase("add")) {
 					config.mmodeAllowedList.add(args[2]);
 					config.saveConfig();
@@ -102,20 +88,15 @@ public class Commands  implements CommandExecutor  {
 		}
 		return false;
 	}
-	
-	
-	private boolean hasPerm(CommandSender sender)
-	{
-		boolean has = false;
-		if (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender)
-		{
-			has = true;
+
+	private boolean hasPerm(CommandSender sender) {
+		if (sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender) {
+			return true;
 		}
-		if (sender instanceof Player && sender.hasPermission("mmode.admin"))
-		{
-			has = true;
+		if (sender instanceof Player && sender.hasPermission("mmode.admin")) {
+			return true;
 		}
-		return has;
+		return false;
 	}
 
 }
