@@ -43,8 +43,7 @@ public class JoinListener implements Listener {
 		}
 
 		if (!config.mmodeAllowedList.contains(event.getPlayer().getName())) {
-			event.disallow(Result.KICK_OTHER,
-					ColorParser.parseColor(config.kickMessage));
+			event.disallow(Result.KICK_OTHER, ColorParser.parseColor(config.kickMessage));
 		}
 	}
 
