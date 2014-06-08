@@ -32,8 +32,12 @@ public class JoinListener implements Listener {
 		this.config = config;
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onLogin(PlayerLoginEvent event) {
+		if (event.getResult() != Result.ALLOWED) {
+			return;
+		}
+
 		if (!config.mmodeEnabled || !config.allowedlistEnabled || event.getPlayer().hasPermission("mmode.join")) {
 			return;
 		}
