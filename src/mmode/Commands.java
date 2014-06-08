@@ -34,8 +34,7 @@ public class Commands implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command arg1, String arg2,
-			String[] args) {
+	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] args) {
 		// check permissions
 		if (!hasPerm(sender)) {
 			sender.sendMessage(ColorParser.parseColor("&4You don't have permission to do this"));
@@ -44,6 +43,7 @@ public class Commands implements CommandExecutor {
 		// handle command
 		if (args.length == 1 && args[0].equalsIgnoreCase("on")) {
 			config.mmodeEnabled = true;
+			config.saveConfig();
 			if (config.allowedlistEnabled && config.kickOnEnable) {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					if (!config.mmodeAllowedList.contains(p.getName())) {
@@ -55,6 +55,7 @@ public class Commands implements CommandExecutor {
 			return true;
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("off")) {
 			config.mmodeEnabled = false;
+			config.saveConfig();
 			sender.sendMessage(ColorParser.parseColor("&9Maintenance mode off"));
 			return true;
 		} else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
