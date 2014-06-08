@@ -39,6 +39,7 @@ public class Config {
 	public void loadConfig() {
 		FileConfiguration config = YamlConfiguration.loadConfiguration(new File("plugins/MMode/config.yml"));
 
+		mmodeEnabled = config.getBoolean("MaintenanceEnabled", mmodeEnabled);
 		mmodeMessage = config.getString("PingMessage", mmodeMessage);
 		mmodeMOTD = config.getString("MOTD", mmodeMOTD);
 		mmodeIconPath = config.getString("Icon", mmodeIconPath);
@@ -53,6 +54,7 @@ public class Config {
 	public void saveConfig() {
 		FileConfiguration config = new YamlConfiguration();
 
+		config.set("MaintenanceEnabled", mmodeEnabled);
 		config.set("PingMessage", mmodeMessage);
 		config.set("MOTD", mmodeMOTD);
 		config.set("Icon", mmodeIconPath);
