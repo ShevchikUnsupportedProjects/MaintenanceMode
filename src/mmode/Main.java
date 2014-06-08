@@ -17,42 +17,24 @@
 
 package mmode;
 
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 
 public class Main extends JavaPlugin {
 
-	public ProtocolManager protocolManager;
 	private Config config;
-	private Commands commands;
-	private JoinListener jlistener;
-	private PingResponseListener prlistener;
 
 	@Override
 	public void onEnable() {
 		config = new Config();
 		config.loadConfig();
-		commands = new Commands(config);
-		getCommand("mmode").setExecutor(commands);
-		jlistener = new JoinListener(config);
-		getServer().getPluginManager().registerEvents(jlistener, this);
-		protocolManager = ProtocolLibrary.getProtocolManager();
-		prlistener = new PingResponseListener(this, config);
-		prlistener.addPingResponsePacketListener();
+		getCommand("mmode").setExecutor(new Commands(config));
+		getServer().getPluginManager().registerEvents(new JoinListener(config), this);
+		new PingResponseListener(this, config).addPingResponsePacketListener();
 	}
 
 	@Override
 	public void onDisable() {
-		commands = null;
-		HandlerList.unregisterAll((JavaPlugin) this);
-		jlistener = null;
-		protocolManager.removePacketListeners(this);
-		prlistener = null;
-		protocolManager = null;
-		config = null;
+		config.saveConfig();
 	}
 
 }

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
@@ -39,7 +40,7 @@ public class PingResponseListener {
 	}
 
 	public void addPingResponsePacketListener() {
-		main.protocolManager.addPacketListener(
+		ProtocolLibrary.getProtocolManager().addPacketListener(
 			new PacketAdapter(
 					PacketAdapter
 					.params(main, PacketType.Status.Server.OUT_SERVER_INFO)
@@ -70,8 +71,7 @@ public class PingResponseListener {
 							ping.setFavicon(favicon);
 						}
 						// write to packet
-						event.getPacket().getServerPings().getValues()
-								.set(0, ping);
+						event.getPacket().getServerPings().getValues().set(0, ping);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
