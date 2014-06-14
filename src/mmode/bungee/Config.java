@@ -17,14 +17,25 @@
 
 package mmode.bungee;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+
+import javax.imageio.ImageIO;
 
 import net.md_5.bungee.api.Favicon;
 
 public class Config {
 
-	public HashSet<String> maintenanceaddressset = new HashSet<String>();
+	private Main main;
 
+	public Config(Main main) {
+		this.main = main;
+	}
+
+	public HashSet<String> maintenanceaddressset = new HashSet<String>();
 	public String mmodeMessage = "&6Maintenance";
 	public String mmodeMOTD = "{motd} &4At maintenance";
 	public String mmodeIconPath = "server-icon.png";
@@ -34,9 +45,47 @@ public class Config {
 	public Favicon favicon = null;
 
 	public void loadConfig() {
+		File configfile = new File(main.getDataFolder(), "config.yml");
+
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configfile);
+		} catch (FileNotFoundException e) {
+		}
+
+		maintenanceaddressset = new HashSet<String>(config.getStringList("MaintenanceEnabled"));
+		mmodeMessage = config.getString("PingMessage", mmodeMessage);
+		mmodeMOTD = config.getString("MOTD", mmodeMOTD);
+		mmodeIconPath = config.getString("Icon", mmodeIconPath);
+		kickMessage = config.getString("KickMessage", kickMessage);
+		kickOnEnable = config.getBoolean("KickNonAllowedOnMModeEnable", kickOnEnable);
+
+		try {
+			File iconfile = new File(mmodeIconPath);
+			if (iconfile.exists()) {
+				favicon = Favicon.create(ImageIO.read(iconfile));
+			}
+		} catch (Exception e) {
+		}
 	}
 
 	public void saveConfig() {
+		File configfile = new File(main.getDataFolder(), "config.yml");
+
+		YamlConfiguration config = new YamlConfiguration();
+
+		config.set("MaintenanceEnabled", new ArrayList<String>(maintenanceaddressset));
+		config.set("PingMessage", mmodeMessage);
+		config.set("MOTD", mmodeMOTD);
+		config.set("Icon", mmodeIconPath);
+		config.set("KickMessage", kickMessage);
+		config.set("KickNonAllowedOnMModeEnable", kickOnEnable);
+
+		try {
+			config.save(configfile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

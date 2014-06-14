@@ -26,7 +26,7 @@ public class Main extends Plugin {
 
 	@Override
 	public void onEnable() {
-		config = new Config();
+		config = new Config(this);
 		config.loadConfig();
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new Commands(config));
 		ProxyServer.getInstance().getPluginManager().registerListener(this, new JoinListener(config));
