@@ -46,6 +46,7 @@ public class Commands extends Command {
 			}
 			String serveraddress = ProxyServer.getInstance().getServers().get(servername).getAddress().getHostString().toLowerCase();
 			config.maintenanceaddressset.add(serveraddress);
+			config.saveConfig();
 			if (config.kickOnEnable) {
 				for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
 					if (p.getServer().getInfo().getName().equals(servername) && !p.hasPermission("mmode.join")) {
@@ -67,6 +68,7 @@ public class Commands extends Command {
 			String serveraddress = ProxyServer.getInstance().getServers().get(servername).getAddress().getHostString().toLowerCase();
 			if (config.maintenanceaddressset.contains(serveraddress)) {
 				config.maintenanceaddressset.remove(serveraddress);
+				config.saveConfig();
 				sender.sendMessage(ColorParser.parseColor("&9Maintenance mode disabled on server "+servername));
 			} else {
 				sender.sendMessage(ColorParser.parseColor("&4Maintenance mode wasn't enabled on server "+servername));
