@@ -19,6 +19,8 @@ package mmode.bungee;
 
 import java.util.HashSet;
 
+import net.md_5.bungee.api.Favicon;
+
 public class Config {
 
 	public HashSet<String> maintenanceaddressset = new HashSet<String>();
@@ -28,6 +30,8 @@ public class Config {
 	public String mmodeIconPath = "server-icon.png";
 	public boolean kickOnEnable = true;
 	public String kickMessage = "Server is at maintenance. Please come back later.";
+
+	public Favicon favicon = null;
 
 	public void loadConfig() {
 	}

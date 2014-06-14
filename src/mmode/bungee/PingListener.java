@@ -37,6 +37,9 @@ public class PingListener implements Listener {
 			event.getResponse().setVersion(new Protocol(ColorParser.parseColor(config.mmodeMessage), -1));
 			String motd = ColorParser.parseColor(config.mmodeMOTD.replace("{motd}", event.getResponse().getDescription()));
 			event.getResponse().setDescription(motd);
+			if (config.favicon != null) {
+				event.getResponse().setFavicon(config.favicon);
+			}
 		}
 	}
 
