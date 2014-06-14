@@ -17,8 +17,8 @@
 
 package mmode.bungee;
 
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
@@ -40,13 +40,13 @@ public class Commands extends Command {
 				return;
 			}
 			String servername = args[1];
-			if (!BungeeCord.getInstance().getServers().containsKey(servername)) {
+			if (!ProxyServer.getInstance().getServers().containsKey(servername)) {
 				sender.sendMessage(ColorParser.parseColor("&4Can't find server with name "+args[1]));
 				return;
 			}
 			config.maintenanceset.add(servername);
 			if (config.kickOnEnable) {
-				for (ProxiedPlayer p : BungeeCord.getInstance().getPlayers()) {
+				for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
 					if (p.getServer().getInfo().getName().equals(servername) && !p.hasPermission("mmode.join")) {
 						p.disconnect(ColorParser.parseColor(config.kickMessage));
 					}
@@ -59,7 +59,7 @@ public class Commands extends Command {
 				return;
 			}
 			String servername = args[1];
-			if (!BungeeCord.getInstance().getServers().containsKey(servername)) {
+			if (!ProxyServer.getInstance().getServers().containsKey(servername)) {
 				sender.sendMessage(ColorParser.parseColor("&4Can't find server with name "+args[1]));
 				return;
 			}
