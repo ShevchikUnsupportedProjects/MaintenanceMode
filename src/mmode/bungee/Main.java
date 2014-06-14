@@ -12,6 +12,7 @@ public class Main extends Plugin {
 		config = new Config();
 		config.loadConfig();
 		ProxyServer.getInstance().getPluginManager().registerCommand(this, new Commands(config));
+		ProxyServer.getInstance().getPluginManager().registerListener(this, new JoinListener(config));
 	}
 
 	@Override
