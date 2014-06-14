@@ -83,7 +83,7 @@ public class YamlConfiguration {
 		String root = path.substring(0, index);
 		Object section = self.get(root);
 		if (section == null) {
-			section = new LinkedHashMap<>();
+			section = new LinkedHashMap<String, Object>();
 			self.put(root, section);
 		}
 		if (section instanceof YamlConfiguration) {
