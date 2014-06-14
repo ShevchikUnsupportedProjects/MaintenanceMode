@@ -17,9 +17,6 @@
 
 package mmode.bukkit;
 
-import java.io.File;
-import java.io.FileInputStream;
-
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -27,7 +24,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
-import com.comphenix.protocol.wrappers.WrappedServerPing.CompressedImage;
 
 public class PingResponseListener {
 
@@ -65,10 +61,8 @@ public class PingResponseListener {
 						String motd = ColorParser.parseColor(config.mmodeMOTD.replace("{motd}", prevmotd));
 						ping.setMotD(motd);
 						// set icon
-						File iconfile = new File(config.mmodeIconPath);
-						if (iconfile.exists()) {
-							CompressedImage favicon = CompressedImage.fromPng(new FileInputStream(iconfile));
-							ping.setFavicon(favicon);
+						if (config.image != null) {
+							ping.setFavicon(config.image);
 						}
 						// write to packet
 						event.getPacket().getServerPings().getValues().set(0, ping);
@@ -79,4 +73,5 @@ public class PingResponseListener {
 			}
 		);
 	}
+
 }

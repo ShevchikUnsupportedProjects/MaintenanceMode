@@ -18,12 +18,15 @@
 package mmode.bukkit;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.comphenix.protocol.wrappers.WrappedServerPing.CompressedImage;
 
 public class Config {
 
@@ -36,6 +39,8 @@ public class Config {
 	public String kickMessage = "Server is at maintenance. Please come back later.";
 	public HashSet<String> mmodeAllowedList = new HashSet<String>();
 
+	public CompressedImage image = null;
+
 	public void loadConfig() {
 		FileConfiguration config = YamlConfiguration.loadConfiguration(new File("plugins/MMode/config.yml"));
 
@@ -47,6 +52,14 @@ public class Config {
 		kickMessage = config.getString("KickMessage", kickMessage);
 		mmodeAllowedList = new HashSet<String>(config.getStringList("AllowedList"));
 		kickOnEnable = config.getBoolean("KickNonAllowedOnMModeEnable", kickOnEnable);
+
+		try {
+			File iconfile = new File(mmodeIconPath);
+			if (iconfile.exists()) {
+				image = CompressedImage.fromPng(new FileInputStream(iconfile));
+			}
+		} catch (Exception e) {
+		}
 
 		saveConfig();
 	}
