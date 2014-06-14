@@ -202,7 +202,7 @@ public class YamlConfiguration {
 
 	public List<Long> getLongList(String path) {
 		List<?> list = getList(path);
-		List<Long> result = new ArrayList<>();
+		List<Long> result = new ArrayList<Long>();
 
 		for (Object object : list) {
 			if (object instanceof Number) {
