@@ -44,9 +44,9 @@ public class Commands implements CommandExecutor {
 		if (args.length == 1 && args[0].equalsIgnoreCase("on")) {
 			config.mmodeEnabled = true;
 			config.saveConfig();
-			if (config.allowedlistEnabled && config.kickOnEnable) {
+			if (config.kickOnEnable) {
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (!config.mmodeAllowedList.contains(p.getName()) && !p.hasPermission("mmode.join")) {
+					if (!p.hasPermission("mmode.join")) {
 						p.kickPlayer(ColorParser.parseColor(config.kickMessage));
 					}
 				}
@@ -62,30 +62,6 @@ public class Commands implements CommandExecutor {
 			config.loadConfig();
 			sender.sendMessage(ColorParser.parseColor("&9Config reloaded"));
 			return true;
-		} else if ((args.length == 2 || args.length == 3) && args[0].equalsIgnoreCase("alist")) {
-			if (args.length == 2) {
-				if (args[1].equalsIgnoreCase("on")) {
-					config.allowedlistEnabled = true;
-					config.saveConfig();
-					sender.sendMessage(ColorParser.parseColor("&9Allowed list enabled"));
-					return true;
-				} else if (args[1].equalsIgnoreCase("off")) {
-					config.allowedlistEnabled = false;
-					config.saveConfig();
-					sender.sendMessage(ColorParser.parseColor("&9Allowed list disabled"));
-					return true;
-				}
-			} else if (args.length == 3) {
-				if (args[1].equalsIgnoreCase("add")) {
-					config.mmodeAllowedList.add(args[2]);
-					config.saveConfig();
-					sender.sendMessage(ColorParser.parseColor("&9Player added to list"));
-				} else if (args[1].equalsIgnoreCase("remove")) {
-					config.mmodeAllowedList.remove(args[2]);
-					config.saveConfig();
-					sender.sendMessage(ColorParser.parseColor("&9Player removed from list"));
-				}
-			}
 		}
 		return false;
 	}

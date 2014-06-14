@@ -38,25 +38,20 @@ public class JoinListener implements Listener {
 			return;
 		}
 
-		if (!config.mmodeEnabled || !config.allowedlistEnabled || event.getPlayer().hasPermission("mmode.join")) {
+		if (!config.mmodeEnabled || event.getPlayer().hasPermission("mmode.join")) {
 			return;
 		}
 
-		if (!config.mmodeAllowedList.contains(event.getPlayer().getName())) {
-			event.disallow(Result.KICK_OTHER, ColorParser.parseColor(config.kickMessage));
-		}
+		event.disallow(Result.KICK_OTHER, ColorParser.parseColor(config.kickMessage));
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onJoin(PlayerJoinEvent event) {
-		if (!config.mmodeEnabled || !config.allowedlistEnabled || event.getPlayer().hasPermission("mmode.join")) {
+		if (!config.mmodeEnabled || event.getPlayer().hasPermission("mmode.join")) {
 			return;
 		}
 
-		if (!config.mmodeAllowedList.contains(event.getPlayer().getName())) {
-			event.getPlayer().kickPlayer(ColorParser.parseColor(config.kickMessage));
-		}
-
+		event.getPlayer().kickPlayer(ColorParser.parseColor(config.kickMessage));
 	}
 
 }

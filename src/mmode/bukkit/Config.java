@@ -20,8 +20,6 @@ package mmode.bukkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,10 +37,8 @@ public class Config {
 	public String mmodeMessage = "&6Maintenance";
 	public String mmodeMOTD = "{motd} &4At maintenance";
 	public String mmodeIconPath = "server-icon.png";
-	public boolean allowedlistEnabled = true;
 	public boolean kickOnEnable = true;
 	public String kickMessage = "Server is at maintenance. Please come back later.";
-	public HashSet<String> mmodeAllowedList = new HashSet<String>();
 
 	public CompressedImage image = null;
 
@@ -53,9 +49,7 @@ public class Config {
 		mmodeMessage = config.getString("PingMessage", mmodeMessage);
 		mmodeMOTD = config.getString("MOTD", mmodeMOTD);
 		mmodeIconPath = config.getString("Icon", mmodeIconPath);
-		allowedlistEnabled = config.getBoolean("enableallowedlist", allowedlistEnabled);
 		kickMessage = config.getString("KickMessage", kickMessage);
-		mmodeAllowedList = new HashSet<String>(config.getStringList("AllowedList"));
 		kickOnEnable = config.getBoolean("KickNonAllowedOnMModeEnable", kickOnEnable);
 
 		try {
@@ -76,9 +70,7 @@ public class Config {
 		config.set("PingMessage", mmodeMessage);
 		config.set("MOTD", mmodeMOTD);
 		config.set("Icon", mmodeIconPath);
-		config.set("enableallowedlist", allowedlistEnabled);
 		config.set("KickMessage", kickMessage);
-		config.set("AllowedList", new ArrayList<String>(mmodeAllowedList));
 		config.set("KickNonAllowedOnMModeEnable", kickOnEnable);
 
 		try {
