@@ -30,6 +30,11 @@ import com.comphenix.protocol.wrappers.WrappedServerPing.CompressedImage;
 
 public class Config {
 
+	private Main main;
+	public Config(Main main) {
+		this.main = main;
+	}
+
 	public boolean mmodeEnabled = false;
 	public String mmodeMessage = "&6Maintenance";
 	public String mmodeMOTD = "{motd} &4At maintenance";
@@ -42,7 +47,7 @@ public class Config {
 	public CompressedImage image = null;
 
 	public void loadConfig() {
-		FileConfiguration config = YamlConfiguration.loadConfiguration(new File("plugins/MMode/config.yml"));
+		FileConfiguration config = YamlConfiguration.loadConfiguration(new File(main.getDataFolder(), "config.yml"));
 
 		mmodeEnabled = config.getBoolean("MaintenanceEnabled", mmodeEnabled);
 		mmodeMessage = config.getString("PingMessage", mmodeMessage);
@@ -77,7 +82,7 @@ public class Config {
 		config.set("KickNonAllowedOnMModeEnable", kickOnEnable);
 
 		try {
-			config.save(new File("plugins/MMode/config.yml"));
+			config.save(new File(main.getDataFolder(), "config.yml"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

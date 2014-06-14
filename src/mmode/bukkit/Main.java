@@ -25,7 +25,7 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		config = new Config();
+		config = new Config(this);
 		config.loadConfig();
 		getCommand("mmode").setExecutor(new Commands(config));
 		getServer().getPluginManager().registerEvents(new JoinListener(config), this);
