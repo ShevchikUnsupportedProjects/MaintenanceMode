@@ -32,7 +32,7 @@ public class JoinListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPostLogin(ServerConnectEvent event) {
-		if (config.maintenanceset.contains(event.getTarget().getName())) {
+		if (config.maintenanceaddressset.contains(event.getTarget().getAddress().getHostString().toLowerCase())) {
 			event.setCancelled(true);
 			event.getPlayer().disconnect(ColorParser.parseColor(config.kickMessage));
 		}

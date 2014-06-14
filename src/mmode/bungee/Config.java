@@ -21,7 +21,7 @@ import java.util.HashSet;
 
 public class Config {
 
-	public HashSet<String> maintenanceset = new HashSet<String>();
+	public HashSet<String> maintenanceaddressset = new HashSet<String>();
 
 	public String mmodeMessage = "&6Maintenance";
 	public String mmodeMOTD = "{motd} &4At maintenance";

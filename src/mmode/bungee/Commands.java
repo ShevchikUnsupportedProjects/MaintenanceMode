@@ -44,7 +44,8 @@ public class Commands extends Command {
 				sender.sendMessage(ColorParser.parseColor("&4Can't find server with name "+args[1]));
 				return;
 			}
-			config.maintenanceset.add(servername);
+			String serveraddress = ProxyServer.getInstance().getServers().get(servername).getAddress().getHostString().toLowerCase();
+			config.maintenanceaddressset.add(serveraddress);
 			if (config.kickOnEnable) {
 				for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
 					if (p.getServer().getInfo().getName().equals(servername) && !p.hasPermission("mmode.join")) {
@@ -63,8 +64,9 @@ public class Commands extends Command {
 				sender.sendMessage(ColorParser.parseColor("&4Can't find server with name "+args[1]));
 				return;
 			}
-			if (config.maintenanceset.contains(servername)) {
-				config.maintenanceset.remove(servername);
+			String serveraddress = ProxyServer.getInstance().getServers().get(servername).getAddress().getHostString().toLowerCase();
+			if (config.maintenanceaddressset.contains(serveraddress)) {
+				config.maintenanceaddressset.remove(serveraddress);
 				sender.sendMessage(ColorParser.parseColor("&9Maintenance mode disabled on server "+servername));
 			} else {
 				sender.sendMessage(ColorParser.parseColor("&4Maintenance mode wasn't enabled on server "+servername));
