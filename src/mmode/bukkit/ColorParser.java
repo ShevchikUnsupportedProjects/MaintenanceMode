@@ -21,7 +21,6 @@ import org.bukkit.ChatColor;
 
 public class ColorParser {
 
-	// Parse Colors
 	public static String parseColor(String message) {
 		message = message.replaceAll("&0", ChatColor.BLACK + "");
 		message = message.replaceAll("&1", ChatColor.DARK_BLUE + "");

@@ -46,7 +46,7 @@ public class Commands implements CommandExecutor {
 			config.saveConfig();
 			if (config.allowedlistEnabled && config.kickOnEnable) {
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (!config.mmodeAllowedList.contains(p.getName())) {
+					if (!config.mmodeAllowedList.contains(p.getName()) && !p.hasPermission("mmode.join")) {
 						p.kickPlayer(ColorParser.parseColor(config.kickMessage));
 					}
 				}
