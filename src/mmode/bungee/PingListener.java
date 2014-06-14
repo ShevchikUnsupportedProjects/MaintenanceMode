@@ -17,13 +17,14 @@
 
 package mmode.bungee;
 
+import mmode.bukkit.ColorParser;
+import net.md_5.bungee.api.ServerPing.Protocol;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 public class PingListener implements Listener {
 
-	@SuppressWarnings("unused")
 	private Config config;
 
 	public PingListener(Config config) {
@@ -32,6 +33,11 @@ public class PingListener implements Listener {
 
 	@EventHandler
 	public void onPostLogin(ProxyPingEvent event) {
+		if (config.maintenanceaddressset.contains(event.getConnection().getVirtualHost().getHostString().toLowerCase())) {
+			event.getResponse().setVersion(new Protocol(ColorParser.parseColor(config.mmodeMessage), -1));
+			String motd = ColorParser.parseColor(config.mmodeMOTD.replace("{motd}", event.getResponse().getDescription()));
+			event.getResponse().setDescription(motd);
+		}
 	}
 
 }
