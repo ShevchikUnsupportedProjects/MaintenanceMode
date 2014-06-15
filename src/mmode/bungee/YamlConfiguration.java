@@ -53,6 +53,7 @@ public class YamlConfiguration {
 	}
 
 	public void save(File file) throws IOException {
+		file.getParentFile().mkdirs();
 		yaml.dump(self, new FileWriter(file));
 	}
 
