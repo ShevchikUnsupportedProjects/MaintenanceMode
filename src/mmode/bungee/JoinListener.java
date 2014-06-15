@@ -17,6 +17,7 @@
 
 package mmode.bungee;
 
+import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -29,12 +30,18 @@ public class JoinListener implements Listener {
 		this.config = config;
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
-	public void onPostLogin(ServerConnectEvent event) {
+	public void onPreLogin(PreLoginEvent event) {
+		if (config.maintenanceaddressset.contains(event.getConnection().getVirtualHost().getHostString().toLowerCase())) {
+			event.setCancelled(true);
+			event.setCancelReason(ColorParser.parseColor(config.kickMessage));
+		}		
+	}
+
+	@EventHandler
+	public void onServerConnect(ServerConnectEvent event) {
 		if (config.maintenanceaddressset.contains(event.getTarget().getAddress().getHostString().toLowerCase())) {
 			event.setCancelled(true);
-			event.getPlayer().disconnect(ColorParser.parseColor(config.kickMessage));
 		}
 	}
 
