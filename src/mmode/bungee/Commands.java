@@ -49,7 +49,7 @@ public class Commands extends Command {
 			config.saveConfig();
 			if (config.kickOnEnable) {
 				for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-					if (p.getServer().getInfo().getName().equals(servername) && !p.hasPermission("mmode.join")) {
+					if (p.getServer().getInfo().getAddress().getHostString().toLowerCase().equals(serveraddress) && !p.hasPermission("mmode.join")) {
 						p.disconnect(ColorParser.parseColor(config.kickMessage));
 					}
 				}
