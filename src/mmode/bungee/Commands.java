@@ -17,8 +17,12 @@
 
 package mmode.bungee;
 
+import java.util.Map.Entry;
+
+import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
@@ -44,12 +48,16 @@ public class Commands extends Command {
 				sender.sendMessage(ColorParser.parseColor("&4Can't find server with name "+args[1]));
 				return;
 			}
-			String serveraddress = ProxyServer.getInstance().getServers().get(servername).getAddress().getHostString().toLowerCase();
+			String serveraddress = getServerForcedHost(servername);
+			if (serveraddress == null) {
+				sender.sendMessage(ColorParser.parseColor("&4Can't find forced host for server with name "+args[1]));
+				return;
+			}
 			config.maintenanceaddressset.add(serveraddress);
 			config.saveConfig();
 			if (config.kickOnEnable) {
 				for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-					if (p.getServer().getInfo().getAddress().getHostString().toLowerCase().equals(serveraddress) && !p.hasPermission("mmode.join")) {
+					if (p.getPendingConnection().getVirtualHost().getHostString().toLowerCase().equals(serveraddress) && !p.hasPermission("mmode.join")) {
 						p.disconnect(ColorParser.parseColor(config.kickMessage));
 					}
 				}
@@ -65,7 +73,11 @@ public class Commands extends Command {
 				sender.sendMessage(ColorParser.parseColor("&4Can't find server with name "+args[1]));
 				return;
 			}
-			String serveraddress = ProxyServer.getInstance().getServers().get(servername).getAddress().getHostString().toLowerCase();
+			String serveraddress = getServerForcedHost(servername);
+			if (serveraddress == null) {
+				sender.sendMessage(ColorParser.parseColor("&4Can't find forced host for server with name "+args[1]));
+				return;
+			}
 			if (config.maintenanceaddressset.contains(serveraddress)) {
 				config.maintenanceaddressset.remove(serveraddress);
 				config.saveConfig();
@@ -77,6 +89,17 @@ public class Commands extends Command {
 			config.loadConfig();
 			sender.sendMessage(ColorParser.parseColor("&9Config reloaded"));
 		}
+	}
+
+	private String getServerForcedHost(String servername) {
+		for (ListenerInfo lst : BungeeCord.getInstance().config.getListeners()) {
+			for (Entry<String, String> entry : lst.getForcedHosts().entrySet()) {
+				if (entry.getValue().equalsIgnoreCase(servername)) {
+					return entry.getKey().toLowerCase();
+				}
+			}
+		}
+		return null;
 	}
 
 }
