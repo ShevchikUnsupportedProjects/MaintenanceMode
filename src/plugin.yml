@@ -1,5 +1,5 @@
 name: MMode
-main: mmode.bukkit.Main
+main: mmode.Main
 version: 3.0
 author: _Shevchik_
 depend: [ProtocolLib]
